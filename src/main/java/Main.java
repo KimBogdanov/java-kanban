@@ -2,8 +2,7 @@ import manager.TaskManager;
 import models.Epic;
 import models.Subtask;
 import models.Task;
-
-import java.util.Map;
+import java.util.List;
 
 public class Main {
 
@@ -19,35 +18,36 @@ public class Main {
         taskManager.saveSubtask(subtask);
         System.out.println();
 
-        System.out.println("Получение тасков!");
-        System.out.println(taskManager.getTask(task.getId()).getDescription());
-        System.out.println(taskManager.getSubtask(subtask.getId()).getDescription());
-        System.out.println(taskManager.getEpic(epic.getId()).getDescription());
-        System.out.println();
+//        System.out.println("Получение тасков!");
+//        System.out.println(taskManager.getTask(task.getId()));
+//        System.out.println(taskManager.getSubtask(subtask.getId()));
+//        System.out.println(taskManager.getEpic(epic.getId()));
+//        System.out.println();
+//
+//        System.out.println("Получение всех задач!");
+//        System.out.println(taskManager.getAllTasks());
+//        System.out.println(taskManager.getAllSubtasks());
+//        System.out.println(taskManager.getAllEpics());
+//        System.out.println();
+//
+//        System.out.println("Удаление всех задач");
+//        taskManager.deleteAllTasks();
+//        System.out.println(taskManager.getAllTasks().isEmpty());
+//        taskManager.deleteAllSubtask();
+//        System.out.println(taskManager.getAllSubtasks().isEmpty());
+//        taskManager.deleteAllEpic();
+//        System.out.println(taskManager.getAllEpics().isEmpty());
+//
+//        taskManager.saveTask(task);
+//        taskManager.saveEpic(epic);
+//        taskManager.saveSubtask(subtask);
 
-        System.out.println("Получение всех задач!");
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println();
 
-        System.out.println("Удаление всех задач");
-        taskManager.deleteAllTasks();
-        System.out.println(taskManager.getAllTasks().isEmpty());
-        taskManager.deleteAllSubtask();
-        System.out.println(taskManager.getAllSubtasks().isEmpty());
-        taskManager.deleteAllEpic();
-        System.out.println(taskManager.getAllEpics().isEmpty());
-
-        taskManager.saveTask(task);
-        taskManager.saveEpic(epic);
-        taskManager.saveSubtask(subtask);
-
-        System.out.println("Получение всех задач после удаления");
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println();
+//        System.out.println("Получение всех задач после удаления");
+//        System.out.println(taskManager.getAllTasks());
+//        System.out.println(taskManager.getAllSubtasks());
+//        System.out.println(taskManager.getAllEpics());
+//        System.out.println();
 
         System.out.println("Удаление по id");
         taskManager.deleteTask(task.getId());
@@ -61,11 +61,25 @@ public class Main {
         taskManager.saveEpic(epic);
         taskManager.saveSubtask(subtask);
         taskManager.deleteEpic(epic.getId());
+
         System.out.println(taskManager.getAllSubtasks().isEmpty());
+        System.out.println(taskManager.getAllEpics().isEmpty());
 
         taskManager.saveTask(task);
         taskManager.saveEpic(epic);
         taskManager.saveSubtask(subtask);
+
+        System.out.println("Получение всех задач!");
+        System.out.println(taskManager.getAllTasks());
+        System.out.println(taskManager.getAllSubtasks());
+        System.out.println(taskManager.getAllEpics());
+        System.out.println();
+
+        System.out.println("Получение всех задач!");
+        System.out.println(taskManager.getAllTasks());
+        System.out.println(taskManager.getAllSubtasks());
+        System.out.println(taskManager.getAllEpics());
+        System.out.println();
 
         System.out.println("Обновление тасков");
         Task taskNew = taskManager.getTask(task.getId());
@@ -74,14 +88,16 @@ public class Main {
         taskManager.updateTask(taskNew);
         System.out.println(taskManager.getTask(taskNew.getId()).getName());
         System.out.println(taskManager.getTask(taskNew.getId()).getDescription());
+        System.out.println();
 
+        System.out.println("Обновление эпика");
         Epic epicNew = taskManager.getEpic(epic.getId());
         epicNew.setName("Обновленный эпик");
         epicNew.setDescription("Обновление описания Эпика");
         taskManager.updateEpic(epicNew);
         System.out.println(taskManager.getEpic(epicNew.getId()).getName());
         System.out.println(taskManager.getEpic(epicNew.getId()).getDescription());
-        taskManager.getEpic(epicNew.getId()).getSubtaskList().forEach(System.out::println);
+        System.out.println(taskManager.getEpic(epicNew.getId()).getSubtaskList());
 
         Subtask subtaskNew = taskManager.getSubtask(subtask.getId());
         subtaskNew.setName("Обновленный сабтаск");
@@ -93,10 +109,9 @@ public class Main {
         System.out.println();
 
         System.out.println("Получение субтасков эпика");
-        Map<Integer, Subtask> subtasksForEpic = taskManager.getSubtaskForEpic(epicNew);
+        List<Subtask> subtasksForEpic = taskManager.getSubtaskForEpic(epicNew);
         System.out.println(subtasksForEpic);
 
         System.out.println("Обновление статусов");
-
     }
 }
