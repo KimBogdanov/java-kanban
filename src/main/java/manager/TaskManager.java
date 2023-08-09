@@ -134,7 +134,7 @@ public class TaskManager {
         if (subtaskList.isEmpty()) {
             epic.setStatus(Status.NEW);
         }
-        Enum<Status> status = null;
+        Status status = null;
         for (Integer subtaskId : subtaskList) {
             Subtask subtask = subtaskDao.get(subtaskId);
             if(status == null){

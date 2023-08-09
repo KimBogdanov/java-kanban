@@ -5,7 +5,7 @@ public class Task {
     protected Integer id;
     protected String name;
     protected String description;
-    protected Enum<Status> status;
+    protected Status status;
 
     public Task(String name, String description) {
         this.name = name;
@@ -37,11 +37,11 @@ public class Task {
         this.description = description;
     }
 
-    public Enum<Status> getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Enum<Status> status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
