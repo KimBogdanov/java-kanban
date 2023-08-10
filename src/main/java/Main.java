@@ -18,36 +18,36 @@ public class Main {
         taskManager.saveSubtask(subtask);
         System.out.println();
 
-//        System.out.println("Получение тасков!");
-//        System.out.println(taskManager.getTask(task.getId()));
-//        System.out.println(taskManager.getSubtask(subtask.getId()));
-//        System.out.println(taskManager.getEpic(epic.getId()));
-//        System.out.println();
-//
-//        System.out.println("Получение всех задач!");
-//        System.out.println(taskManager.getAllTasks());
-//        System.out.println(taskManager.getAllSubtasks());
-//        System.out.println(taskManager.getAllEpics());
-//        System.out.println();
-//
-//        System.out.println("Удаление всех задач");
-//        taskManager.deleteAllTasks();
-//        System.out.println(taskManager.getAllTasks().isEmpty());
-//        taskManager.deleteAllSubtask();
-//        System.out.println(taskManager.getAllSubtasks().isEmpty());
-//        taskManager.deleteAllEpic();
-//        System.out.println(taskManager.getAllEpics().isEmpty());
-//
-//        taskManager.saveTask(task);
-//        taskManager.saveEpic(epic);
-//        taskManager.saveSubtask(subtask);
+        System.out.println("Получение тасков!");
+        System.out.println(taskManager.getTask(task.getId()));
+        System.out.println(taskManager.getSubtask(subtask.getId()));
+        System.out.println(taskManager.getEpic(epic.getId()));
+        System.out.println();
+
+        System.out.println("Получение всех задач!");
+        System.out.println(taskManager.getAllTasks());
+        System.out.println(taskManager.getAllSubtasks());
+        System.out.println(taskManager.getAllEpics());
+        System.out.println();
+
+        System.out.println("Удаление всех задач");
+        taskManager.deleteAllTasks();
+        System.out.println(taskManager.getAllTasks().isEmpty());
+        taskManager.deleteAllSubtask();
+        System.out.println(taskManager.getAllSubtasks().isEmpty());
+        taskManager.deleteAllEpic();
+        System.out.println(taskManager.getAllEpics().isEmpty());
+
+        taskManager.saveTask(task);
+        taskManager.saveEpic(epic);
+        taskManager.saveSubtask(subtask);
 
 
-//        System.out.println("Получение всех задач после удаления");
-//        System.out.println(taskManager.getAllTasks());
-//        System.out.println(taskManager.getAllSubtasks());
-//        System.out.println(taskManager.getAllEpics());
-//        System.out.println();
+        System.out.println("Получение всех задач после удаления");
+        System.out.println(taskManager.getAllTasks());
+        System.out.println(taskManager.getAllSubtasks());
+        System.out.println(taskManager.getAllEpics());
+        System.out.println();
 
         System.out.println("Удаление по id");
         taskManager.deleteTask(task.getId());
@@ -75,11 +75,6 @@ public class Main {
         System.out.println(taskManager.getAllEpics());
         System.out.println();
 
-        System.out.println("Получение всех задач!");
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println();
 
         System.out.println("Обновление тасков");
         Task taskNew = taskManager.getTask(task.getId());

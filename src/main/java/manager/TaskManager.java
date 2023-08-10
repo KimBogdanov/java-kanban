@@ -11,48 +11,46 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TaskManager {
-    private int counter = 0;
+    private static int counter = 0;
     Map<Integer, Task> taskDao = new HashMap<>();
     Map<Integer, Subtask> subtaskDao = new HashMap<>();
     Map<Integer, Epic> epicDao = new HashMap<>();
 
     public void saveTask(Task task) {
-        if (task.isNew()) {
-//            Сохранять нужно только новые задачи - мы обязательно должны сами сгенерировать id,
-//            иначе может получиться, что пользователь проставил и передал
-//            некорректное id (например, которое уже занято),и работа приложения будет нарушена.
-//            То же самое касается подзадачи и эпика
-//      К сожалению, не понимаю, что именно исправить
-//      У меня есть проверка на уникальность
-//      id генерируется автоматически
-//      Не могли бы вы перефразировать?
+        if (!taskDao.containsKey(task.getId())) {
             task.setId(counter++);
+            taskDao.put(task.getId(), task);
+            System.out.println("Таск сохранен, id= " + task.getId());
+        } else {
+            System.out.println("Таск с id= " + task.getId() + " уже существует");
         }
-        taskDao.put(task.getId(), task);
-        System.out.println("Таск сохранен, id= " + task.getId());
     }
 
     public void saveSubtask(Subtask subtask) {
-        Epic epic = epicDao.get(subtask.getEpicId());
-        if (epic == null) {
-            System.out.println("Такого эпика не существует " + subtask.getId());
-            return;
-        }
-        if (subtask.isNew()) {
+        if (!subtaskDao.containsKey(subtask.getId())) {
+            Epic epic = epicDao.get(subtask.getEpicId());
+            if (epic == null) {
+                System.out.println("Такого эпика не существует " + subtask.getId());
+                return;
+            }
             subtask.setId(counter++);
+            epic.getSubtaskList().add(subtask.getId());
+            subtaskDao.put(subtask.getId(), subtask);
+            updateStatusEpic(epic.getId());
+            System.out.println("Сабтаск сохранен, id= " + subtask.getId());
+        } else {
+            System.out.println("Сабтаск с id= " + subtask.getId() + " уже существует");
         }
-        epic.getSubtaskList().add(subtask.getId());
-        subtaskDao.put(subtask.getId(), subtask);
-        updateStatusEpic(epic.getId());
-        System.out.println("Сабтаск сохранен, id= " + subtask.getId());
     }
 
     public void saveEpic(Epic epic) {
-        if (epic.isNew()) {
+        if (!epicDao.containsKey(epic.getId())) {
             epic.setId(counter++);
+            epicDao.put(epic.getId(), epic);
+            System.out.println("Эпик сохранен, id= " + epic.getId());
+        } else {
+            System.out.println("Эпик с id= " + epic.getId() + " уже существует");
         }
-        epicDao.put(epic.getId(), epic);
-        System.out.println("Эпик сохранен, id= " + epic.getId());
     }
 
     public Task getTask(int id) {
@@ -84,11 +82,11 @@ public class TaskManager {
     }
 
     public void deleteAllSubtask() {
-        epicDao.values().forEach(epic -> updateStatusEpic(epic.getId()));
         for (Epic epic : epicDao.values()) {
             epic.getSubtaskList().clear();
         }
         subtaskDao.clear();
+        epicDao.values().forEach(epic -> updateStatusEpic(epic.getId()));
     }
 
     public void deleteAllEpic() {
@@ -103,9 +101,9 @@ public class TaskManager {
     public void deleteSubtask(Integer id) {
         Epic epic = epicDao.get(subtaskDao.get(id).getEpicId());
         if (epic != null) {
-            updateStatusEpic(epic.getId());
             epic.getSubtaskList().remove(id);
             subtaskDao.remove(id);
+            updateStatusEpic(epic.getId());
         }
     }
 
@@ -120,11 +118,11 @@ public class TaskManager {
     }
 
     public void updateEpic(Epic epicNew) {
-        epicDao.computeIfPresent(epicNew.getId(), (id, oldEpic) -> epicNew);
+        epicDao.put(epicNew.getId(), epicNew);
     }
 
     public void updateSubtask(Subtask subtaskNew) {
-        subtaskDao.computeIfPresent(subtaskNew.getEpicId(), (id, oldSubtask) -> subtaskNew);
+        subtaskDao.put(subtaskNew.getEpicId(), subtaskNew);
         Epic epic = epicDao.get(subtaskNew.getEpicId());
         if (epic != null) {
             updateStatusEpic(epic.getId());

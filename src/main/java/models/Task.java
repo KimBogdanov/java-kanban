@@ -45,9 +45,6 @@ public class Task {
         this.status = status;
     }
 
-    public boolean isNew() {
-        return id == null;
-    }
 
     @Override
     public String toString() {
