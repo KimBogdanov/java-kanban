@@ -16,40 +16,46 @@ public class TaskManager {
     Map<Integer, Subtask> subtaskDao = new HashMap<>();
     Map<Integer, Epic> epicDao = new HashMap<>();
 
-    public void saveTask(Task task) {
-        if (!taskDao.containsKey(task.getId())) {
+    public Task saveTask(Task task) {
+        if (task.getId() == null) {
             task.setId(counter++);
             taskDao.put(task.getId(), task);
             System.out.println("Таск сохранен, id= " + task.getId());
+            return task;
         } else {
             System.out.println("Таск с id= " + task.getId() + " уже существует");
+            return null;
         }
     }
 
-    public void saveSubtask(Subtask subtask) {
-        if (!subtaskDao.containsKey(subtask.getId())) {
+    public Subtask saveSubtask(Subtask subtask) {
+        if (subtask.getId() == null) {
             Epic epic = epicDao.get(subtask.getEpicId());
             if (epic == null) {
                 System.out.println("Такого эпика не существует " + subtask.getId());
-                return;
+                return null;
             }
             subtask.setId(counter++);
             epic.getSubtaskList().add(subtask.getId());
             subtaskDao.put(subtask.getId(), subtask);
             updateStatusEpic(epic.getId());
             System.out.println("Сабтаск сохранен, id= " + subtask.getId());
+            return subtask;
         } else {
             System.out.println("Сабтаск с id= " + subtask.getId() + " уже существует");
+            return null;
         }
     }
 
-    public void saveEpic(Epic epic) {
-        if (!epicDao.containsKey(epic.getId())) {
+    public Epic saveEpic(Epic epic) {
+        if (epic.getId() == null) {
             epic.setId(counter++);
             epicDao.put(epic.getId(), epic);
             System.out.println("Эпик сохранен, id= " + epic.getId());
+            return epic;
         } else {
             System.out.println("Эпик с id= " + epic.getId() + " уже существует");
+            return null;
         }
     }
 
