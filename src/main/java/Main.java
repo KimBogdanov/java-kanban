@@ -24,21 +24,17 @@ public class Main {
 
         System.out.println("Получение истории");
         taskManager.getTask(0);
-        System.out.println(taskManager.getHistory().size() == 1);
+        System.out.println(taskManager.getHistory().size() == 1 ? "Таск сохранился в истории" : "Таск не сохранился");
         taskManager.getEpic(4);
-        System.out.println(taskManager.getHistory().size() == 2);
+        System.out.println(taskManager.getHistory().size() == 2 ? "Эпик сохранился в истории" : "Эпик не сохранился");
         taskManager.getSubtask(5);
-        System.out.println(taskManager.getHistory().size() == 3);
-        taskManager.getTask(0);
-        taskManager.getTask(0);
-        taskManager.getTask(0);
-        taskManager.getTask(0);
-        taskManager.getTask(0);
-        taskManager.getTask(0);
-        taskManager.getTask(0);
-        System.out.println(taskManager.getHistory().size());
-        taskManager.getTask(0);
-        taskManager.getTask(0);
+        System.out.println(taskManager.getHistory().size() == 3
+                ? "Сабтаск сохранился в истории" : "Сабтаск не сохранился");
+        for (int i = 0; i < 15; i++) {
+            taskManager.getTask(0);
+        }
+
+
         System.out.println(taskManager.getHistory().size() < 11);
     }
 }
