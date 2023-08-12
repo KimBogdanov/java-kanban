@@ -3,11 +3,12 @@ package manager;
 import models.Task;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int LIMIT = 10;
-    private final List<Task> history = new ArrayList<>();
+    private final LinkedList<Task> history = new LinkedList<>();
 
     @Override
     public void addTask(Task task) {
@@ -16,7 +17,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         history.add(task);
         if (history.size() > LIMIT) {
-            history.remove(0);
+            history.removeFirst();
         }
     }
 

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
-    private static int counter = 0;
+    private int counter = 0;
     Map<Integer, Task> taskDao = new HashMap<>();
     Map<Integer, Subtask> subtaskDao = new HashMap<>();
     Map<Integer, Epic> epicDao = new HashMap<>();
@@ -25,7 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Таск сохранен, id= " + task.getId());
             return task;
         } else {
-            System.out.println("Таск с id= " + task.getId() + " уже существует");
+            System.out.println("Таск с id= " + task.getId() + " не был сохранен, т.к. id не равно null");
             return null;
         }
     }
@@ -45,7 +45,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Сабтаск сохранен, id= " + subtask.getId());
             return subtask;
         } else {
-            System.out.println("Сабтаск с id= " + subtask.getId() + " уже существует");
+            System.out.println("Сабтаск с id= " + subtask.getId() + " не был сохранен, т.к. id не равно null");
             return null;
         }
     }
@@ -58,7 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Эпик сохранен, id= " + epic.getId());
             return epic;
         } else {
-            System.out.println("Эпик с id= " + epic.getId() + " уже существует");
+            System.out.println("Эпик с id= " + epic.getId() + " не был сохранен, т.к. id не равно null");
             return null;
         }
     }
