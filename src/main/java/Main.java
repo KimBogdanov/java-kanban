@@ -9,32 +9,46 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
+        HistoryManager defaultHistory = Managers.getDefaultHistory();
 
-        System.out.println("Сохранение!");
+        System.out.println("Создание эпика");
+        Epic epic = new Epic("Эпик без подзадач", "Эпик без подзадач");
+        taskManager.saveEpic(epic);
+
+        Epic epic2 = new Epic("Эпик с подзадачами", "Эпик с подзадачами");
+        taskManager.saveEpic(epic2);
+
+        Subtask subtask = new Subtask("Сабтаск 1", "Сабтаск, epic2", epic2.getId());
+        Subtask subtask2 = new Subtask("Сабтаск 2", "Сабтаск, epic2", epic2.getId());
+        Subtask subtask3 = new Subtask("Сабтаск 3", "Сабтаск, epic2", epic2.getId());
+
+        taskManager.saveSubtask(subtask);
+        taskManager.saveSubtask(subtask2);
+        taskManager.saveSubtask(subtask3);
         Task task = new Task("Таск1", "Тестовый таск");
         taskManager.saveTask(task);
-        taskManager.saveTask(new Task("Таск2", "Тестовый такс2"));
-        taskManager.saveTask(new Task("Таск3", "Тестовый такс2"));
-        taskManager.saveTask(new Task("Таск4", "Тестовый такс2"));
-        Epic epic = new Epic("Эпик1", "Тестовый Эпик");
-        taskManager.saveEpic(epic);
-        Subtask subtask = new Subtask("Сабтаск1", "Сабтаск к Эпик1", epic.getId());
-        taskManager.saveSubtask(subtask);
+
+
         System.out.println();
 
         System.out.println("Получение истории");
-        taskManager.getTask(0);
-        System.out.println(taskManager.getHistory().size() == 1 ? "Таск сохранился в истории" : "Таск не сохранился");
-        taskManager.getEpic(4);
-        System.out.println(taskManager.getHistory().size() == 2 ? "Эпик сохранился в истории" : "Эпик не сохранился");
-        taskManager.getSubtask(5);
-        System.out.println(taskManager.getHistory().size() == 3
-                ? "Сабтаск сохранился в истории" : "Сабтаск не сохранился");
-        for (int i = 0; i < 15; i++) {
-            taskManager.getTask(0);
-        }
+        taskManager.getEpic(epic2.getId());
+        taskManager.getEpic(epic2.getId());
+        taskManager.getEpic(epic2.getId());
+        taskManager.getTask(task.getId());
+        System.out.println(taskManager.getHistory());
 
+        taskManager.deleteTask(task.getId());
+        System.out.println(taskManager.getHistory());
 
-        System.out.println(taskManager.getHistory().size() < 11);
+        taskManager.getSubtask(subtask.getId());
+        System.out.println(taskManager.getHistory());
+
+        taskManager.deleteSubtask(subtask.getId());
+        System.out.println(taskManager.getHistory());
+
+        taskManager.deleteEpic(epic2.getId());
+        System.out.println(taskManager.getHistory());
+
     }
 }
