@@ -6,10 +6,8 @@ import models.Subtask;
 import models.Task;
 
 public class Main {
-
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
-        HistoryManager defaultHistory = Managers.getDefaultHistory();
 
         System.out.println("Создание эпика");
         Epic epic = new Epic("Эпик без подзадач", "Эпик без подзадач");
@@ -27,8 +25,6 @@ public class Main {
         taskManager.saveSubtask(subtask3);
         Task task = new Task("Таск1", "Тестовый таск");
         taskManager.saveTask(task);
-
-
         System.out.println();
 
         System.out.println("Получение истории");
@@ -49,6 +45,5 @@ public class Main {
 
         taskManager.deleteEpic(epic2.getId());
         System.out.println(taskManager.getHistory());
-
     }
 }

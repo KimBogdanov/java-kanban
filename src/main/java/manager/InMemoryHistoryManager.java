@@ -41,7 +41,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private List<Task> getTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
         Node node = first;
         while (node != null) {
             tasks.add(node.task);
@@ -75,6 +75,9 @@ public class InMemoryHistoryManager implements HistoryManager {
                 node.next.prev = node.prev;
             }
         }
+    }
+    public boolean contains(Integer id){
+        return nodeMap.containsKey(id);
     }
 
     public static class Node {

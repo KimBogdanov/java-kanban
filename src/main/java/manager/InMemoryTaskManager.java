@@ -121,8 +121,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(Integer id) {
-        Task remove = taskDao.remove(id);
-        if (historyManager.getHistory().contains(remove)) {
+        if (historyManager.contains(id)) {
             historyManager.remove(id);
         }
     }
@@ -132,8 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epicDao.get(subtaskDao.get(id).getEpicId());
         if (epic != null) {
             epic.getSubtaskList().remove(id);
-            Subtask remove = subtaskDao.remove(id);
-            if (historyManager.getHistory().contains(remove)) {
+            if (historyManager.contains(id)) {
                 historyManager.remove(id);
             }
             updateStatusEpic(epic.getId());
@@ -143,12 +141,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpic(Integer id) {
         List<Integer> subtaskList = epicDao.get(id).getSubtaskList();
-//        subtaskList.forEach(this::deleteSubtask);
         for (Integer integer : subtaskList) {
             deleteSubtask(integer);
         }
-        Epic remove = epicDao.remove(id);
-        if (historyManager.getHistory().contains(remove)) {
+        if (historyManager.contains(id)) {
             historyManager.remove(id);
         }
     }
