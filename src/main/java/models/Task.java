@@ -1,6 +1,8 @@
 package models;
 
 
+import java.util.Objects;
+
 public class Task {
     protected Integer id;
     protected String name;
@@ -11,6 +13,13 @@ public class Task {
         this.name = name;
         this.description = description;
         status = Status.NEW;
+    }
+
+    public Task(Integer id, String name, String description, Status status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -45,6 +54,18 @@ public class Task {
         this.status = status;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(id, task.id) && Objects.equals(name, task.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 
     @Override
     public String toString() {
