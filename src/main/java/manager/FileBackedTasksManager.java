@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -45,6 +44,51 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.saveEpic(epic);
         save();
         return epic;
+    }
+
+    @Override
+    public Task getTask(int id) {
+        Task task = super.getTask(id);
+        save();
+        return task;
+    }
+
+    @Override
+    public Subtask getSubtask(int id) {
+        Subtask subtask = super.getSubtask(id);
+        save();
+        return subtask;
+    }
+
+    @Override
+    public Epic getEpic(int id) {
+        Epic epic = super.getEpic(id);
+        save();
+        return epic;
+    }
+
+    @Override
+    public void deleteTask(Integer id) {
+        super.deleteTask(id);
+        save();
+    }
+
+    @Override
+    public void deleteSubtask(Integer id) {
+        super.deleteSubtask(id);
+        save();
+    }
+
+    @Override
+    public void deleteEpic(Integer id) {
+        super.deleteEpic(id);
+        save();
+    }
+
+    @Override
+    public void updateStatusEpic(int epicId) {
+        super.updateStatusEpic(epicId);
+        save();
     }
 
     private void save() {

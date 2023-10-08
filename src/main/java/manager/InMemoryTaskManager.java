@@ -5,9 +5,7 @@ import models.Status;
 import models.Subtask;
 import models.Task;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -100,11 +98,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public void deleteTask(Integer id) {
+        if (taskDao.containsKey(id)) {
+            taskDao.remove(id);
+            historyManager.remove(id);
+        }
+    }
+
     public void deleteAllTasks() {
         if (!taskDao.isEmpty()) {
-            for (Integer id : taskDao.keySet()) {
-                deleteTask(id);
-            }
+            new ArrayList<>(taskDao.keySet()).forEach(this::deleteTask);
             System.out.println("Все таски удалены");
         } else {
             System.out.println("Невозможно удалить. Нет сохраненных тасок");
@@ -112,35 +115,27 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllSubtask() {
-        if (!subtaskDao.isEmpty()) {
-            for (Integer id : subtaskDao.keySet()) {
-                deleteSubtask(id);
+    public void deleteEpic(Integer id) {
+        Epic epic = epicDao.get(id);
+        if (epic != null) {
+            new ArrayList<>(epic.getSubtaskList()).forEach(this::deleteSubtask);
+        }
+        Epic remove = epicDao.remove(id);
+        if (remove != null) {
+            System.out.println("Epic id=" + id + " has been deleted");
+            if (historyManager.contains(id)) {
+                historyManager.remove(id);
             }
-            System.out.println("Все сабтаски удалены");
-        } else {
-            System.out.println("Невозможно удалить. Нет сохраненных сабтасок");
         }
     }
 
     @Override
     public void deleteAllEpic() {
         if (!epicDao.isEmpty()) {
-            for (Integer id :
-                    epicDao.keySet()) {
-                deleteEpic(id);
-            }
+            new ArrayList<>(epicDao.keySet()).forEach(this::deleteEpic);
             System.out.println("Все эпики удалены");
         } else {
             System.out.println("Невозможно удалить. Нет сохраненных эпиков");
-        }
-    }
-
-    @Override
-    public void deleteTask(Integer id) {
-        taskDao.remove(id);
-        if (historyManager.contains(id)) {
-            historyManager.remove(id);
         }
     }
 
@@ -149,6 +144,8 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epicDao.get(subtaskDao.get(id).getEpicId());
         if (epic != null) {
             epic.getSubtaskList().remove(id);
+            subtaskDao.remove(id);
+            System.out.println("Subtask id=" + id + " has been deleted");
             if (historyManager.contains(id)) {
                 historyManager.remove(id);
             }
@@ -157,13 +154,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpic(Integer id) {
-        List<Integer> subtaskList = epicDao.get(id).getSubtaskList();
-        for (Integer integer : subtaskList) {
-            deleteSubtask(integer);
-        }
-        if (historyManager.contains(id)) {
-            historyManager.remove(id);
+    public void deleteAllSubtask() {
+        if (!subtaskDao.isEmpty()) {
+            new HashSet<>(subtaskDao.keySet()).forEach(this::deleteSubtask);
+            System.out.println("Все сабтаски удалены");
+        } else {
+            System.out.println("Невозможно удалить. Нет сохраненных сабтасок");
         }
     }
 
