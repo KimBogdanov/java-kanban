@@ -52,18 +52,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 .flatMap(Collection::stream)
                 .map(CSVFormatter::toString)
                 .toList();
-        String allString = String.join("/n", allTasks);
+        String allTasksStringFormat = String.join("\n", allTasks);
         String history = CSVFormatter.historyToString(getHistoryManager());
 
         try (Writer writer = new FileWriter(file)) {
             StringBuilder sb = new StringBuilder();
-            sb.append(allString).append("\n").append(history);
+            sb.append("id,type,name,status,description,epic\n")
+                    .append(allTasksStringFormat)
+                    .append("\n\n")
+                    .append(history);
             writer.write(sb.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
             throw new ManagerSaveException("Полундра, все пропало!");
-
         }
     }
 }

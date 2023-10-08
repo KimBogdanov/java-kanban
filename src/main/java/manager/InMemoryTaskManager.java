@@ -101,26 +101,44 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        taskDao.clear();
+        if (!taskDao.isEmpty()) {
+            for (Integer id : taskDao.keySet()) {
+                deleteTask(id);
+            }
+            System.out.println("Все таски удалены");
+        } else {
+            System.out.println("Невозможно удалить. Нет сохраненных тасок");
+        }
     }
 
     @Override
     public void deleteAllSubtask() {
-        for (Epic epic : epicDao.values()) {
-            epic.getSubtaskList().clear();
+        if (!subtaskDao.isEmpty()) {
+            for (Integer id : subtaskDao.keySet()) {
+                deleteSubtask(id);
+            }
+            System.out.println("Все сабтаски удалены");
+        } else {
+            System.out.println("Невозможно удалить. Нет сохраненных сабтасок");
         }
-        subtaskDao.clear();
-        epicDao.values().forEach(epic -> updateStatusEpic(epic.getId()));
     }
 
     @Override
     public void deleteAllEpic() {
-        subtaskDao.clear();
-        epicDao.clear();
+        if (!epicDao.isEmpty()) {
+            for (Integer id :
+                    epicDao.keySet()) {
+                deleteEpic(id);
+            }
+            System.out.println("Все эпики удалены");
+        } else {
+            System.out.println("Невозможно удалить. Нет сохраненных эпиков");
+        }
     }
 
     @Override
     public void deleteTask(Integer id) {
+        taskDao.remove(id);
         if (historyManager.contains(id)) {
             historyManager.remove(id);
         }
