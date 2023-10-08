@@ -15,6 +15,10 @@ public class InMemoryTaskManager implements TaskManager {
     Map<Integer, Epic> epicDao = new HashMap<>();
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
     @Override
     public Task saveTask(Task task) {
         if (task.getId() == null) {

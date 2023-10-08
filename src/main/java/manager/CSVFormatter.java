@@ -23,7 +23,6 @@ public class CSVFormatter {
         return stringCSV;
     }
 
-
     public static Task fromString(String value) {
         String[] fields = value.split(",");
         switch (TaskType.valueOf(fields[1])) {
