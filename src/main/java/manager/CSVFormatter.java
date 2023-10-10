@@ -1,7 +1,6 @@
 package manager;
 
 import models.*;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +12,7 @@ public class CSVFormatter {
     public static String toString(Task task) {
         String stringCSV = String.format("%s,%S,%s,%s,%s,",
                 task.getId(),
-                task.getClass().getSimpleName(),
+                task.getTaskType(),
                 task.getName(),
                 task.getStatus(),
                 task.getDescription());
@@ -25,30 +24,26 @@ public class CSVFormatter {
 
     public static Task fromString(String value) {
         String[] fields = value.split(",");
-        switch (TaskType.valueOf(fields[1])) {
+        TaskType taskType = TaskType.valueOf(fields[1]);
+        Integer id = Integer.valueOf(fields[0]);
+        String name = fields[2];
+        String description = fields[4];
+        Status status = Status.valueOf(fields[3]);
+        switch (taskType) {
             case TASK:
-                return new Task(Integer.valueOf(fields[0]),
-                        fields[2],
-                        fields[4],
-                        Status.valueOf(fields[3]));
+                return new Task(id, name, description, status);
             case SUBTASK:
-                return new Subtask(Integer.valueOf(fields[0]),
-                        fields[2],
-                        fields[4],
-                        Status.valueOf(fields[3]),
-                        Integer.valueOf(fields[5]));
+                Integer epicId = Integer.valueOf(fields[5]);
+                return new Subtask(id, name, description, status, epicId);
             case EPIC:
-                return new Epic(Integer.valueOf(fields[0]),
-                        fields[2],
-                        fields[4],
-                        Status.valueOf(fields[3]));
+                return new Epic(id, name, description, status);
             default:
                 return null;
         }
     }
 
-    public static String historyToString(HistoryManager manager) {
-        return manager.getHistory().stream()
+    public static String historyToString(List<Task> history) {
+        return history.stream()
                 .map(Task::getId)
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));

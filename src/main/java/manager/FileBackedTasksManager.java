@@ -134,11 +134,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.updateStatusEpic(epicId);
         save();
     }
-
     private void save() {
         List<String> allTasks = Stream.of(taskDao.values(), epicDao.values(), subtaskDao.values()).flatMap(Collection::stream).map(CSVFormatter::toString).toList();
         String allTasksStringFormat = String.join("\n", allTasks);
-        String history = CSVFormatter.historyToString(getHistoryManager());
+        String history = CSVFormatter.historyToString(getHistory());
 
         try (Writer writer = new FileWriter(file)) {
             StringBuilder sb = new StringBuilder();

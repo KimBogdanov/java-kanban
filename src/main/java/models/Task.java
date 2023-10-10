@@ -9,10 +9,13 @@ public class Task {
     protected String description;
     protected Status status;
 
+    protected TaskType taskType;
+
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         status = Status.NEW;
+        taskType = TaskType.TASK;
     }
 
     public Task(Integer id, String name, String description, Status status) {
@@ -20,6 +23,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+        taskType = TaskType.TASK;
     }
 
     public Integer getId() {
@@ -52,6 +56,10 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
     }
 
     @Override
