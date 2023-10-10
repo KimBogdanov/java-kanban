@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private int counter = 0;
-    Map<Integer, Task> taskDao = new HashMap<>();
-    Map<Integer, Subtask> subtaskDao = new HashMap<>();
-    Map<Integer, Epic> epicDao = new HashMap<>();
+    protected Map<Integer, Task> taskDao = new HashMap<>();
+    protected Map<Integer, Subtask> subtaskDao = new HashMap<>();
+    protected Map<Integer, Epic> epicDao = new HashMap<>();
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public void setCounter(int counter) {
+    protected void setCounter(int counter) {
         this.counter = counter;
     }
 
@@ -219,10 +219,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
-    }
-
-    public HistoryManager getHistoryManager() {
-        return historyManager;
     }
 }
 
