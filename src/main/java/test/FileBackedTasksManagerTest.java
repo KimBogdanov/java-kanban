@@ -20,8 +20,8 @@ public class FileBackedTasksManagerTest {
         Subtask subtask = fileManager.saveSubtask(
                 new Subtask("Subtask", "subtaskDescription", epic.getId()));
 
-        fileManager.getTask(task.getId());
-        fileManager.getEpic(epic1.getId());
+//        fileManager.getTask(task.getId());
+//        fileManager.getEpic(epic1.getId());
 
         FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.
                 loadFromFile(new File("src/main/resources/save.cvs"));

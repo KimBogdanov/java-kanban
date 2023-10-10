@@ -13,7 +13,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected Map<Integer, Task> taskDao = new HashMap<>();
     protected Map<Integer, Subtask> subtaskDao = new HashMap<>();
     protected Map<Integer, Epic> epicDao = new HashMap<>();
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
 
     protected void setCounter(int counter) {
         this.counter = counter;
