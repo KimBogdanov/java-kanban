@@ -21,6 +21,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task saveTask(Task task) {
+        if (task == null) {
+            return null;
+        }
         if (task.getId() == null) {
             task.setId(counter++);
             taskDao.put(task.getId(), task);
@@ -34,35 +37,42 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask saveSubtask(Subtask subtask) {
-        if (subtask.getId() == null) {
-            Epic epic = epicDao.get(subtask.getEpicId());
-            if (epic == null) {
-                System.out.println("Такого эпика не существует " + subtask.getId());
+        if (subtask != null) {
+            if (subtask.getId() == null) {
+                Epic epic = epicDao.get(subtask.getEpicId());
+                if (epic == null) {
+                    System.out.println("Такого эпика не существует " + subtask.getId());
+                    return null;
+                }
+                subtask.setId(counter++);
+                epic.getSubtaskList().add(subtask.getId());
+                subtaskDao.put(subtask.getId(), subtask);
+                updateStatusEpic(epic.getId());
+                System.out.println("Сабтаск сохранен, id= " + subtask.getId());
+                return subtask;
+            } else {
+                System.out.println("Сабтаск с id= " + subtask.getId() + " не был сохранен, т.к. id не равно null");
                 return null;
             }
-            subtask.setId(counter++);
-            epic.getSubtaskList().add(subtask.getId());
-            subtaskDao.put(subtask.getId(), subtask);
-            updateStatusEpic(epic.getId());
-            System.out.println("Сабтаск сохранен, id= " + subtask.getId());
-            return subtask;
-        } else {
-            System.out.println("Сабтаск с id= " + subtask.getId() + " не был сохранен, т.к. id не равно null");
-            return null;
         }
+        return null;
     }
 
     @Override
     public Epic saveEpic(Epic epic) {
-        if (epic.getId() == null) {
-            epic.setId(counter++);
-            epicDao.put(epic.getId(), epic);
-            System.out.println("Эпик сохранен, id= " + epic.getId());
-            return epic;
-        } else {
-            System.out.println("Эпик с id= " + epic.getId() + " не был сохранен, т.к. id не равно null");
-            return null;
+        if (epic != null) {
+            if (epic.getId() == null) {
+                epic.setId(counter++);
+                epicDao.put(epic.getId(), epic);
+                System.out.println("Эпик сохранен, id= " + epic.getId());
+                return epic;
+            } else {
+                System.out.println("Эпик с id= " + epic.getId() + " не был сохранен, т.к. id не равно null");
+                return null;
+            }
         }
+        return null;
+
     }
 
     @Override
