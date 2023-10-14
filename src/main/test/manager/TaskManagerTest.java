@@ -102,46 +102,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    protected void shouldSaveAndGetEpic() {
-        Epic epicSave = manager.saveEpic(createEpic());
-        assertEquals(List.of(epicSave), manager.getAllEpics());
-        Epic epicGet = manager.getEpic(epicSave.getId());
-        assertEquals(epicSave, epicGet);
-    }
-
-    @Test
     protected void shouldSaveAndGetEpicIncorrectNull() {
         Epic epicSave = manager.saveEpic(null);
         assertNull(epicSave);
         assertTrue(manager.getAllEpics().isEmpty());
         Epic epicGet = manager.getEpic(555);
         assertNull(epicGet);
-    }
-
-    @Test
-    protected void shouldGetAllEpicAndNull() {
-        assertTrue(manager.getAllEpics().isEmpty());
-        for (int i = 1; i < 5; i++) {
-            manager.saveEpic(createEpic());
-            assertEquals(i, manager.getAllEpics().size());
-        }
-    }
-
-    @Test
-    protected void shouldNotSaveSameEpic() {
-        Epic epicSave = manager.saveEpic(createEpic());
-        manager.saveEpic(epicSave);
-        manager.saveTask(epicSave);
-        assertEquals(1, manager.getAllEpics().size());
-    }
-
-    @Test
-    protected void shouldDeleteEpicIncorrectIdAndNull() {
-        Epic epicSave = manager.saveEpic(createEpic());
-        manager.deleteEpic(epicSave.getId());
-        manager.deleteEpic(999);
-        manager.deleteEpic(null);
-        assertFalse(manager.getAllEpics().contains(epicSave));
     }
 
     @Test

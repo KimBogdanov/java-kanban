@@ -184,7 +184,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    private void save() {
+    public void save() {
         String allTasksStringFormat = Stream.of(taskDao.values(), epicDao.values(), subtaskDao.values())
                 .flatMap(Collection::stream)
                 .map(CSVFormatter::toString)
