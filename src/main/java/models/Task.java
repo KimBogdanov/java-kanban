@@ -1,6 +1,7 @@
 package models;
 
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -8,22 +9,38 @@ public class Task {
     protected String name;
     protected String description;
     protected Status status;
-
     protected TaskType taskType;
+    protected LocalDateTime startTime;
+    protected long duration;
 
-    public Task(String name, String description) {
+    public Task(String name, String description, LocalDateTime startTime, long duration) {
         this.name = name;
         this.description = description;
         status = Status.NEW;
         taskType = TaskType.TASK;
+        this.startTime = startTime;
+        this.duration = duration;
     }
-
-    public Task(Integer id, String name, String description, Status status) {
+    public Task(Integer id, String name, String description, Status status, LocalDateTime startTime, long duration) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
         taskType = TaskType.TASK;
+    }
+
+    public LocalDateTime getEndTime(){
+        return startTime.plusMinutes(duration);
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 
     public Integer getId() {
@@ -62,6 +79,14 @@ public class Task {
         return taskType;
     }
 
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,7 +103,7 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "Type " + this.getClass().getSimpleName() +
+                "Type " + taskType +
                 ", id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

@@ -1,6 +1,8 @@
 package manager;
 
 import models.*;
+
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,12 +12,14 @@ public class CSVFormatter {
     }
 
     public static String toString(Task task) {
-        String stringCSV = String.format("%s,%S,%s,%s,%s,",
+        String stringCSV = String.format("%s,%S,%s,%s,%s,%s,%s",
                 task.getId(),
                 task.getTaskType(),
                 task.getName(),
                 task.getStatus(),
-                task.getDescription());
+                task.getDescription(),
+                task.getStartTime(),
+                task.getDuration());
         if (task instanceof Subtask) {
             stringCSV += ((Subtask) task).getEpicId();
         }
@@ -29,14 +33,16 @@ public class CSVFormatter {
         String name = fields[2];
         String description = fields[4];
         Status status = Status.valueOf(fields[3]);
+        LocalDateTime startTime = LocalDateTime.parse(fields[5]);
+        long duration = Long.parseLong(fields[6]);
         switch (taskType) {
             case TASK:
-                return new Task(id, name, description, status);
+                return new Task(id, name, description, status, startTime, duration);
             case SUBTASK:
                 Integer epicId = Integer.valueOf(fields[5]);
-                return new Subtask(id, name, description, status, epicId);
+                return new Subtask(id, name, description, status, startTime, duration, epicId);
             case EPIC:
-                return new Epic(id, name, description, status);
+                return new Epic(id, name, description, status, startTime, duration);
             default:
                 return null;
         }

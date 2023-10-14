@@ -1,19 +1,30 @@
 package models;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private List<Integer> subtaskIds = new ArrayList<>();
+    private LocalDateTime endTime;
 
-    public Epic(String name, String description) {
-        super(name, description);
+    public Epic(String name, String description, LocalDateTime startTime, long duration) {
+        super(name, description, startTime, duration);
         taskType = TaskType.EPIC;
     }
 
-    public Epic(Integer id, String name, String description, Status status) {
-        super(id, name, description, status);
+    public Epic(Integer id, String name, String description, Status status, LocalDateTime startTime, long duration) {
+        super(id, name, description, status, startTime, duration);
         taskType = TaskType.EPIC;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public List<Integer> getSubtaskList() {

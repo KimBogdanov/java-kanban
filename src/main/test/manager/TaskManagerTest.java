@@ -7,6 +7,7 @@ import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,16 +21,32 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     protected Task createTask() {
-        return new Task("Name", "Description");
+        return new Task("Name",
+                "Description",
+                LocalDateTime.of(2023, 10, 10, 10, 10),
+                60);
     }
 
     protected Subtask createSubtaskAndParentEpic() {
-        Epic epic = new Epic(555, "Name", "Description", Status.NEW);
-        return new Subtask("Name", "Description", 555);
+        Epic epic = new Epic(555, "Name", "Description", Status.NEW,
+                LocalDateTime.of(2023, 10, 10, 10, 10),
+                60);
+        return new Subtask(65,"Name", "Description", Status.NEW,
+                LocalDateTime.of(2023, 10, 10, 10, 10),
+                60, 555);
     }
 
     protected Epic createEpic() {
-        return new Epic("Name", "Description");
+        return new Epic(555, "Name", "Description", Status.NEW,
+                LocalDateTime.of(2023, 10, 10, 10, 10),
+                60);
+    }
+
+    @Test
+    protected void shouldReturnEndTime() {
+        Task saveTask = manager.saveTask(createTask());
+        System.out.println(saveTask.getStartTime());
+        System.out.println(saveTask.getEndTime());
     }
 
     @Test
@@ -83,6 +100,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.deleteAllTasks();
         assertTrue(manager.getAllTasks().isEmpty());
     }
+
     @Test
     protected void shouldSaveAndGetEpic() {
         Epic epicSave = manager.saveEpic(createEpic());
