@@ -29,9 +29,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (task == null) {
             return null;
         }
-        addPriorityTasks(task);
         if (task.getId() == null) {
             task.setId(counter++);
+            addPriorityTasks(task);
             taskDao.put(task.getId(), task);
             System.out.println("Таск сохранен, id= " + task.getId());
             return task;
@@ -44,7 +44,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask saveSubtask(Subtask subtask) {
         if (subtask != null) {
-            addPriorityTasks(subtask);
             if (subtask.getId() == null) {
                 Epic epic = epicDao.get(subtask.getEpicId());
                 if (epic == null) {
@@ -52,6 +51,7 @@ public class InMemoryTaskManager implements TaskManager {
                     return null;
                 }
                 subtask.setId(counter++);
+                addPriorityTasks(subtask);
                 epic.getSubtaskList().add(subtask.getId());
                 subtaskDao.put(subtask.getId(), subtask);
                 updateStatusEpic(epic.getId());
@@ -299,11 +299,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void addPriorityTasks(Task task) {
-        if (!checkCrossTime(task)) {
+        if (task.getStartTime() == null || priorityTasks.isEmpty()) {
+            priorityTasks.add(task);
+        } else if (!checkCrossTime(task)) {
             priorityTasks.add(task);
         } else {
             throw new ManagerValidateException(
-                    "Нельзя сохранить Таск #" + task.getId() + " т.к. он пересекается с другой задачей");
+                    "Нельзя сохранить " + task.getTaskType() + " №"
+                            + task.getId() + " т.к. он пересекается с другой задачей");
         }
     }
 
@@ -311,16 +314,15 @@ public class InMemoryTaskManager implements TaskManager {
         List<Task> prioritizedTasks = getPrioritizedTasks();
         LocalDateTime startTimeTask = task.getStartTime();
         LocalDateTime endTimeTask = task.getEndTime();
-        if (startTimeTask != null) {
-            for (Task prioritizedTask : prioritizedTasks) {
-                LocalDateTime startTime = prioritizedTask.getStartTime();
-                LocalDateTime endTime = prioritizedTask.getEndTime();
-                if (startTime != null && endTime != null) {
-                    if ((startTimeTask.isAfter(startTime) && startTimeTask.isBefore(endTimeTask)) ||
-                            (endTimeTask.isAfter(startTime) && startTimeTask.isBefore(endTime)) ||
-                            (startTimeTask.isBefore(startTime) && endTimeTask.isAfter(endTime))) {
-                        return true;
-                    }
+
+        for (Task prioritizedTask : prioritizedTasks) {
+            LocalDateTime startTime = prioritizedTask.getStartTime();
+            LocalDateTime endTime = prioritizedTask.getEndTime();
+            if (startTime != null && endTime != null) {
+                if ((startTimeTask.isAfter(startTime) && startTimeTask.isBefore(endTime)) ||
+                        (endTimeTask.isAfter(startTime) && startTimeTask.isBefore(endTime)) ||
+                        (startTimeTask.isBefore(startTime) && endTimeTask.isAfter(endTime))) {
+                    return true;
                 }
             }
         }

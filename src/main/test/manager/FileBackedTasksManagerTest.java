@@ -16,9 +16,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
     public static final Path path = Path.of("src/main/resources/save.cvs");
     File file = new File(String.valueOf(path));
+
     @BeforeEach
     public void beforeEach() {
         manager = new FileBackedTasksManager(file);

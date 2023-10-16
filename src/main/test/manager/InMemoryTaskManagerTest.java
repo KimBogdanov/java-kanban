@@ -2,8 +2,8 @@ package manager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest extends TaskManagerTest{
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     public InMemoryTaskManagerTest() {
-        manager= Managers.getDefault();
+        manager = (InMemoryTaskManager) Managers.getDefault();
     }
 }

@@ -121,7 +121,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected void shouldGetAllTaskAndNull() {
         assertTrue(manager.getAllTasks().isEmpty());
         for (int i = 1; i < 5; i++) {
-            manager.saveTask(createTask());
+            manager.saveTask(new Task("Task", "Description"));
             assertEquals(i, manager.getAllTasks().size());
         }
     }
@@ -145,9 +145,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     protected void shouldDeleteAllTask() {
-        for (int i = 0; i < 6; i++) {
-            manager.saveTask(createTask());
-        }
+        for (int i = 0; i < 5; i++) {
+            manager.saveTask(new Task("name", "dess"));        }
+
         manager.deleteAllTasks();
         assertTrue(manager.getAllTasks().isEmpty());
     }
