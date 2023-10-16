@@ -12,7 +12,7 @@ public class CSVFormatter {
     }
 
     public static String toString(Task task) {
-        String stringCSV = String.format("%s,%S,%s,%s,%s,%s,%s",
+        String stringCSV = String.format("%s,%S,%s,%s,%s,%s,%s,",
                 task.getId(),
                 task.getTaskType(),
                 task.getName(),
@@ -33,8 +33,8 @@ public class CSVFormatter {
         String name = fields[2];
         String description = fields[4];
         Status status = Status.valueOf(fields[3]);
-        LocalDateTime startTime = LocalDateTime.parse(fields[5]);
-        long duration = Long.parseLong(fields[6]);
+        LocalDateTime startTime = fields[5].equals("null") ? null : LocalDateTime.parse(fields[5]);
+        Long duration = fields[6].equals("null") ? null : Long.parseLong(fields[6]);
         switch (taskType) {
             case TASK:
                 return new Task(id, name, description, status, startTime, duration);

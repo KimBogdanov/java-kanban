@@ -46,14 +46,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private void loadTask(Task task) {
         if (task instanceof Epic) {
             epicDao.put(task.getId(), (Epic) task);
-            System.out.println("Таск загружен, id= " + task.getId());
+            System.out.println("Эпик загружен, id= " + task.getId());
         } else if (task instanceof Subtask) {
             subtaskDao.put(task.getId(), (Subtask) task);
             System.out.println("Сабтаск загружен, id= " + task.getId());
         } else {
             taskDao.put(task.getId(), task);
-            System.out.println("Эпик загружен, id= " + task.getId());
+            System.out.println("Таск загружен, id= " + task.getId());
         }
+        priorityTasks.add(task);
     }
 
     private void loadHistory(List<Integer> history) {
