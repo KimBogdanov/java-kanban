@@ -37,7 +37,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     public void shouldCorrectlySaveAndLoad() {
         Task task = new Task("Description", "Title", LocalDateTime.now(), 0);
         manager.saveTask(task);
-        Epic epic = new Epic("Description", "Title", LocalDateTime.now(), 0);
+        Epic epic = new Epic("Description", "Title");
         manager.saveEpic(epic);
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
         fileManager.loadFromFile(file);

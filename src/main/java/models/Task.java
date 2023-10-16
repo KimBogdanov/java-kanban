@@ -11,7 +11,14 @@ public class Task {
     protected Status status;
     protected TaskType taskType;
     protected LocalDateTime startTime;
-    protected long duration;
+    protected Long duration;
+
+    public Task(String name, String description) {
+        this.name = name;
+        this.description = description;
+        status = Status.NEW;
+        taskType = TaskType.TASK;
+    }
 
     public Task(String name, String description, LocalDateTime startTime, long duration) {
         this.name = name;
@@ -21,7 +28,8 @@ public class Task {
         this.startTime = startTime;
         this.duration = duration;
     }
-    public Task(Integer id, String name, String description, Status status, LocalDateTime startTime, long duration) {
+
+    public Task(Integer id, String name, String description, Status status, LocalDateTime startTime, Long duration) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,15 +39,19 @@ public class Task {
         taskType = TaskType.TASK;
     }
 
-    public LocalDateTime getEndTime(){
-        return startTime.plusMinutes(duration);
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return null;
+        } else {
+            return startTime.plusMinutes(duration);
+        }
     }
 
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public long getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
@@ -83,21 +95,34 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return Objects.equals(id, task.id) && Objects.equals(name, task.name);
+        if (!(o instanceof Task task)) return false;
+
+        if (!Objects.equals(id, task.id)) return false;
+        if (!Objects.equals(name, task.name)) return false;
+        if (!Objects.equals(description, task.description)) return false;
+        if (status != task.status) return false;
+        if (taskType != task.taskType) return false;
+        if (!Objects.equals(startTime, task.startTime)) return false;
+        return Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (taskType != null ? taskType.hashCode() : 0);
+        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
+        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        return result;
     }
 
     @Override

@@ -15,11 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
 
-    @BeforeEach
-    protected void createManager() {
-        manager = (T) Managers.getDefault();
-    }
-
     protected Task createTask() {
         return new Task("Name",
                 "Description",
@@ -30,16 +25,72 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected Subtask createSubtaskAndParentEpic() {
         Epic epic = new Epic(555, "Name", "Description", Status.NEW,
                 LocalDateTime.of(2023, 10, 10, 10, 10),
-                60);
-        return new Subtask(65,"Name", "Description", Status.NEW,
+                60L);
+        return new Subtask(65, "Name", "Description", Status.NEW,
                 LocalDateTime.of(2023, 10, 10, 10, 10),
-                60, 555);
+                60L, 555);
+    }
+
+    protected Subtask createSubtask() {
+        return new Subtask(null, "Name", "Description", Status.NEW,
+                LocalDateTime.now(), 40L, 555);
     }
 
     protected Epic createEpic() {
-        return new Epic(555, "Name", "Description", Status.NEW,
-                LocalDateTime.of(2023, 10, 10, 10, 10),
-                60);
+        return new Epic(null, "Name", "Description", Status.NEW,
+                null, null);
+    }
+
+    @Test
+    protected void shouldCalculateTimeForEpicIfNoSubtask() {
+        Epic epic = manager.saveEpic(createEpic());
+        manager.calculateEpicTime(epic);
+        assertNull(epic.getStartTime());
+        assertNull(epic.getEndTime());
+        assertNull(epic.getDuration());
+    }
+
+    @Test
+    protected void shouldCalculateTimeForEpicIfSubtaskNoTime() {
+        Epic epic = manager.saveEpic(createEpic());
+        Subtask subtask = createSubtask();
+        subtask.setEpicId(epic.getId());
+        subtask.setStartTime(null);
+        subtask.setDuration(null);
+
+        assertNull(epic.getStartTime());
+        assertNull(epic.getEndTime());
+        assertNull(epic.getDuration());
+    }
+
+    @Test
+    protected void shouldCalculateTimeForEpicOneSubtask() {
+        Epic epic = manager.saveEpic(createEpic());
+        Subtask subtask = createSubtask();
+        subtask.setEpicId(epic.getId());
+        manager.saveSubtask(subtask);
+        assertEquals(subtask.getStartTime(), epic.getStartTime());
+        assertEquals(subtask.getEndTime(), epic.getEndTime());
+        assertEquals(subtask.getDuration(), epic.getDuration());
+    }
+
+    @Test
+    protected void shouldCalculateTimeForEpicMoreSubtask() {
+        Epic epic = manager.saveEpic(createEpic());
+        Subtask subtask = manager.saveSubtask(new Subtask(null, "Name", "Description", Status.NEW,
+                LocalDateTime.of(2008, 1, 1, 1, 1), 40L, epic.getId()));
+
+        Subtask subtask1 = manager.saveSubtask(new Subtask(null, "Name", "Description", Status.NEW,
+                LocalDateTime.of(2030, 1, 1, 1, 1), 40L, epic.getId()));
+
+        Subtask subtask2 = manager.saveSubtask(new Subtask(null, "Name", "Description", Status.NEW,
+                LocalDateTime.of(2025, 1, 1, 1, 1), 40L, epic.getId()));
+
+        assertEquals(subtask.getStartTime(), epic.getStartTime());
+        assertEquals(subtask1.getEndTime(), epic.getEndTime());
+        assertEquals(subtask.getDuration()
+                + subtask1.getDuration()
+                + subtask2.getDuration(), epic.getDuration());
     }
 
     @Test
