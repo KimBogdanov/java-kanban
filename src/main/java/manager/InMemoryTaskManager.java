@@ -191,7 +191,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task taskNew) {
         if (taskNew != null && taskDao.containsKey(taskNew.getId())) {
-            priorityTasks.remove(taskNew);
+            priorityTasks.remove(taskNew.getId());
             addPriorityTasks(taskNew);
             taskDao.put(taskNew.getId(), taskNew);
         } else {
@@ -213,7 +213,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (subtask != null && subtaskDao.containsKey(subtask.getId())) {
-            priorityTasks.remove(subtask);
+            priorityTasks.remove(subtask.getId());
             addPriorityTasks(subtask);
             subtaskDao.put(subtask.getId(), subtask);
             Epic epic = epicDao.get(subtask.getEpicId());
@@ -259,9 +259,6 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    // Получился плохо читаемый код, стремился сделать в один проход по сабтаскам.
-    // Можно сделать через Stream, но тогда по списку придется пройти три раза,
-    // или делать отдельный класс для reduce. Пытялся прикрутить optional, читаемости не помогло
     public void calculateEpicTime(Epic epic) {
         List<Integer> subtaskList = epic.getSubtaskList();
         if (!subtaskList.isEmpty()) {
@@ -301,7 +298,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addPriorityTasks(Task task) {
         if (task.getStartTime() == null || priorityTasks.isEmpty()) {
             priorityTasks.add(task);
-        } else if (!checkCrossTime(task)) {
+        } else if (!isCheckCrossTimeTask(task)) {
             priorityTasks.add(task);
         } else {
             throw new ManagerValidateException(
@@ -310,7 +307,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private boolean checkCrossTime(Task task) {
+    private boolean isCheckCrossTimeTask(Task task) {
         List<Task> prioritizedTasks = getPrioritizedTasks();
         LocalDateTime startTimeTask = task.getStartTime();
         LocalDateTime endTimeTask = task.getEndTime();

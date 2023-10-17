@@ -39,7 +39,7 @@ public class CSVFormatter {
             case TASK:
                 return new Task(id, name, description, status, startTime, duration);
             case SUBTASK:
-                Integer epicId = Integer.valueOf(fields[5]);
+                Integer epicId = Integer.valueOf(fields[7]);
                 return new Subtask(id, name, description, status, startTime, duration, epicId);
             case EPIC:
                 return new Epic(id, name, description, status, startTime, duration);

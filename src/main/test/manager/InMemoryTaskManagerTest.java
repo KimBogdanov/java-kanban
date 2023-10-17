@@ -4,6 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     public InMemoryTaskManagerTest() {
-        manager = (InMemoryTaskManager) Managers.getDefault();
+        manager = new InMemoryTaskManager();
     }
 }
