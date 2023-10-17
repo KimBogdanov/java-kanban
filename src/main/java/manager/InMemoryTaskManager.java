@@ -237,19 +237,22 @@ public class InMemoryTaskManager implements TaskManager {
         List<Integer> subtaskList = epic.getSubtaskList();
         if (subtaskList.isEmpty()) {
             epic.setStatus(Status.NEW);
+            return;
         }
-        Status status = null;
+        int statusDone = 0;
+        Status status = Status.NEW;
         for (Integer subtaskId : subtaskList) {
-            Subtask subtask = subtaskDao.get(subtaskId);
-            if (status == null) {
-                status = subtask.getStatus();
-                continue;
+            Status statusSubtask = subtaskDao.get(subtaskId).getStatus();
+            if (statusSubtask == Status.IN_PROGRESS) {
+                status = Status.IN_PROGRESS;
+                break;
             }
-            if (status == subtask.getStatus()
-                    && !(status == Status.IN_PROGRESS)) {
-                continue;
+            if (statusSubtask == Status.DONE) {
+                statusDone++;
             }
-            epic.setStatus(Status.IN_PROGRESS);
+        }
+        if (statusDone == subtaskList.size()) {
+            status = Status.DONE;
         }
         epic.setStatus(status);
     }
@@ -326,7 +329,7 @@ public class InMemoryTaskManager implements TaskManager {
         return false;
     }
 
-    private List<Task> getPrioritizedTasks() {
+    public List<Task> getPrioritizedTasks() {
         return priorityTasks.stream().toList();
     }
 }

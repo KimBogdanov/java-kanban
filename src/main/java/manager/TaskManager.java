@@ -50,4 +50,6 @@ public interface TaskManager {
     List<Task> getHistory();
 
     void calculateEpicTime(Epic epic);
+
+    List<Task> getPrioritizedTasks();
 }
