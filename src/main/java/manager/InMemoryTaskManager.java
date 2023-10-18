@@ -191,7 +191,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task taskNew) {
         if (taskNew != null && taskDao.containsKey(taskNew.getId())) {
-            priorityTasks.remove(taskNew.getId());
+            Task oldTask = taskDao.get(taskNew.getId());
+            priorityTasks.remove(oldTask);
             addPriorityTasks(taskNew);
             taskDao.put(taskNew.getId(), taskNew);
         } else {
@@ -213,7 +214,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (subtask != null && subtaskDao.containsKey(subtask.getId())) {
-            priorityTasks.remove(subtask.getId());
+            Subtask oldSubtask = subtaskDao.get(subtask.getId());
+            priorityTasks.remove(oldSubtask);
             addPriorityTasks(subtask);
             subtaskDao.put(subtask.getId(), subtask);
             Epic epic = epicDao.get(subtask.getEpicId());
