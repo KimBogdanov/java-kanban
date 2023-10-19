@@ -15,6 +15,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static final String FIRST_STRING = "id,type,name,status,description,epic";
     private File file;
 
+    public FileBackedTasksManager() {
+    }
+
+    public FileBackedTasksManager(File file) {
+        this.file = file;
+    }
+
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fbtm = new FileBackedTasksManager(file);
         ArrayList<String> stringList = readFileContents(file);
@@ -57,7 +64,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         priorityTasks.add(task);
     }
 
-    private void loadHistory(List<Integer> history) {
+    protected void loadHistory(List<Integer> history) {
         Stream.of(taskDao.values(), epicDao.values(), subtaskDao.values())
                 .flatMap(Collection::stream)
                 .filter(task -> history.contains(task.getId()))
@@ -71,10 +78,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             e.printStackTrace();
             throw new ManagerSaveException("Не считалось!");
         }
-    }
-
-    public FileBackedTasksManager(File file) {
-        this.file = file;
     }
 
     @Override
