@@ -1,17 +1,16 @@
 package manager;
 
-
 import Server.KVClient;
+import Server.LocalDateTimeAdapter;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import models.Epic;
 import models.Subtask;
 import models.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class HttpTaskManager extends FileBackedTasksManager {
     private static final String URL = "http://localhost:8078/";
@@ -21,16 +20,18 @@ public class HttpTaskManager extends FileBackedTasksManager {
     public HttpTaskManager() {
         super();
         kvClient = new KVClient(URL);
-        gson = new GsonBuilder().serializeNulls().create();
+        gson = new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
         load();
     }
 
-    private void load() {
+    public void load() {
         String tasks = kvClient.load("task");
-        JsonElement jsonTasks = JsonParser.parseString(tasks);
         int maxId = 0;
-        if (!jsonTasks.isJsonNull()) {
-            JsonArray jsonTaskArray = jsonTasks.getAsJsonArray();
+        if (tasks != null && !tasks.isEmpty()) {
+            JsonArray jsonTaskArray = JsonParser.parseString(tasks).getAsJsonArray();
             for (JsonElement jsonTask : jsonTaskArray) {
                 Task task = gson.fromJson(jsonTask, Task.class);
                 if (task.getId() > maxId) {
@@ -42,9 +43,8 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }
 
         String subtasks = kvClient.load("subtask");
-        JsonElement jsonSubtasks = JsonParser.parseString(subtasks);
-        if (!jsonSubtasks.isJsonNull()) {
-            JsonArray jsonSubtaskArray = jsonSubtasks.getAsJsonArray();
+        if (subtasks != null && !subtasks.isEmpty()) {
+            JsonArray jsonSubtaskArray = JsonParser.parseString(subtasks).getAsJsonArray();
             for (JsonElement jsonSubtask : jsonSubtaskArray) {
                 Subtask subtask = gson.fromJson(jsonSubtask, Subtask.class);
                 if (subtask.getId() > maxId) {
@@ -56,9 +56,8 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }
 
         String epics = kvClient.load("epic");
-        JsonElement jsonEpics = JsonParser.parseString(epics);
-        if (!jsonEpics.isJsonNull()) {
-            JsonArray jsonEpicsArray = jsonSubtasks.getAsJsonArray();
+        if (epics != null && !epics.isEmpty()) {
+            JsonArray jsonEpicsArray = JsonParser.parseString(epics).getAsJsonArray();
             for (JsonElement jsonEpic : jsonEpicsArray) {
                 Epic epic = gson.fromJson(jsonEpic, Epic.class);
                 if (epic.getId() > maxId) {
@@ -70,12 +69,12 @@ public class HttpTaskManager extends FileBackedTasksManager {
         setCounter(maxId);
 
         String history = kvClient.load("history");
-        JsonElement jsonHistoryList = JsonParser.parseString(history);
-        if (!jsonHistoryList.isJsonNull()) {
-            JsonArray jsonHistoryArray = jsonHistoryList.getAsJsonArray();
+        if (history != null && !history.isEmpty()) {
+            JsonArray jsonHistoryArray = JsonParser.parseString(history).getAsJsonArray();
             List<Integer> ids = new ArrayList<>();
-            for (JsonElement jsonTaskId : jsonHistoryArray) {
-                ids.add(jsonTaskId.getAsInt());
+            for (JsonElement jsonTask : jsonHistoryArray) {
+                Task task = gson.fromJson(jsonTask, Task.class);
+                ids.add(task.getId());
             }
             loadHistory(ids);
         }
@@ -88,4 +87,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
         kvClient.put("epic", gson.toJson(epicDao.values()));
         kvClient.put("history", gson.toJson(getHistory()));
     }
+
 }
+
