@@ -40,7 +40,6 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         manager.getTask(saveTask.getId());
         manager.getEpic(saveEpic.getId());
         manager.getSubtask(saveSubtask.getId());
-        List<Task> history = manager.getHistory();
 
         HttpTaskManager managerLoad = new HttpTaskManager();
         Task loadTask = managerLoad.getTask(saveTask.getId());

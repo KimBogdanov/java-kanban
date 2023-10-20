@@ -83,7 +83,6 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         return null;
-
     }
 
     @Override
@@ -345,6 +344,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     public List<Task> getPrioritizedTasks() {
         return priorityTasks.stream().toList();
+    }
+
+    public boolean isContainsTask(Integer id) {
+        return taskDao.containsKey(id);
+    }
+    public boolean isContainsSubtask(Integer id) {
+        return subtaskDao.containsKey(id);
+    }
+    public boolean isContainsEpic(Integer id) {
+        return epicDao.containsKey(id);
     }
 }
 

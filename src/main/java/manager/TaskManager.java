@@ -52,4 +52,7 @@ public interface TaskManager {
     void calculateEpicTime(Epic epic);
 
     List<Task> getPrioritizedTasks();
+    public boolean isContainsTask(Integer id);
+    public boolean isContainsSubtask(Integer id);
+    public boolean isContainsEpic(Integer id);
 }

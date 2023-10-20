@@ -9,6 +9,7 @@ import manager.Managers;
 import models.Epic;
 import models.Subtask;
 import models.Task;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -215,8 +216,12 @@ public class HttpTaskServer {
     private void deleteTask(HttpExchange exchange) {
         try {
             Integer idQuery = requestQueryId(exchange);
-            manager.deleteTask(idQuery);
-            writeResponse(exchange, "Task c id=" + idQuery + " удален", 200);
+            if (manager.isContainsTask(idQuery)) {
+                manager.deleteTask(idQuery);
+                writeResponse(exchange, "Task c id=" + idQuery + " удален", 200);
+            } else {
+                writeResponse(exchange, "Task c id=" + idQuery + " не существует", 400);
+            }
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка при запросе deleteTaskById()");
         }
@@ -286,9 +291,12 @@ public class HttpTaskServer {
     private void deleteEpic(HttpExchange exchange) {
         try {
             int idQuery = requestQueryId(exchange);
-            manager.deleteEpic(idQuery);
-            writeResponse(exchange, "Epic c id=" + idQuery + " успешно удален", 200);
-            System.out.println("Epic c id=" + idQuery + " успешно удален");
+            if (manager.isContainsEpic(idQuery)) {
+                manager.deleteEpic(idQuery);
+                writeResponse(exchange, "Epic c id=" + idQuery + " успешно удален", 200);
+            } else {
+                writeResponse(exchange, "Epic c id=" + idQuery + " не существует", 400);
+            }
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка при запросе deleteEpicById()");
         }
@@ -339,9 +347,12 @@ public class HttpTaskServer {
     private void deleteSubtask(HttpExchange exchange) {
         try {
             int idQuery = requestQueryId(exchange);
-            manager.deleteEpic(idQuery);
-            writeResponse(exchange, "Subtask c id=" + idQuery + " удален", 200);
-            System.out.println("Subtask c id=" + idQuery + " удален");
+            if (manager.isContainsSubtask(idQuery)) {
+                manager.deleteEpic(idQuery);
+                writeResponse(exchange, "Subtask c id=" + idQuery + " удален", 200);
+            } else {
+                writeResponse(exchange, "Subtask c id=" + idQuery + " не существует", 400);
+            }
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка при запросе deleteSubtask()");
         }
