@@ -6,14 +6,12 @@ import com.google.gson.*;
 import models.Epic;
 import models.Subtask;
 import models.Task;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class HttpTaskManager extends FileBackedTasksManager {
-    private static final String URL = "http://localhost:8078/";
+    private static final String URL = "http://localhost:8078";
     private final KVClient kvClient;
     private final Gson gson;
 
@@ -87,6 +85,5 @@ public class HttpTaskManager extends FileBackedTasksManager {
         kvClient.put("epic", gson.toJson(epicDao.values()));
         kvClient.put("history", gson.toJson(getHistory()));
     }
-
 }
 

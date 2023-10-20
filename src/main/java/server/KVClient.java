@@ -22,7 +22,7 @@ public class KVClient {
     private String register() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url + "register"))
+                    .uri(URI.create(url + "/register"))
                     .GET()
                     .header("Content-Type", "application/json")
                     .build();
@@ -37,7 +37,7 @@ public class KVClient {
     }
 
     public String load(String key) {
-        URI uri = URI.create(url + "load/" + key + "?API_TOKEN=" + apiToken);
+        URI uri = URI.create(url + "/load/" + key + "?API_TOKEN=" + apiToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -59,7 +59,7 @@ public class KVClient {
     }
 
     public void put(String key, String value) {
-        URI uri = URI.create(url + "save/" + key + "?API_TOKEN=" + apiToken);
+        URI uri = URI.create(url + "/save/" + key + "?API_TOKEN=" + apiToken);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)

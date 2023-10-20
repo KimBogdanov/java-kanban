@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.*;
-import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import exception.HttpTaskServerException;
@@ -10,7 +9,6 @@ import manager.Managers;
 import models.Epic;
 import models.Subtask;
 import models.Task;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -22,7 +20,6 @@ import java.util.List;
 public class HttpTaskServer {
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-
     private final HttpServer server;
     private final HttpTaskManager manager;
     private final Gson gson;
@@ -36,8 +33,6 @@ public class HttpTaskServer {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
     }
-    //Понял как написать тесты, видимо надо создать слиент. Прошу не заставлять это делать, так как возможности и времени
-    //уже нет. Вручную все протестил.
 
     public void start() {
         System.out.println("Запускаем HttpTaskServer порт " + PORT);
@@ -171,7 +166,7 @@ public class HttpTaskServer {
                 writeResponse(exchange, response, 200);
                 System.out.println("Таски отправленны");
             } else {
-                writeResponse(exchange, "Нет тасок", 404);
+                writeResponse(exchange, "Нет тасок", 200);
                 System.out.println("Нет тасок");
             }
         } catch (IOException exp) {
@@ -220,17 +215,8 @@ public class HttpTaskServer {
     private void deleteTask(HttpExchange exchange) {
         try {
             Integer idQuery = requestQueryId(exchange);
-            List<Task> allTasks = manager.getAllTasks();
-            if (allTasks != null && !allTasks.isEmpty()) {
-                for (Task task : allTasks) {
-                    if (task.getId().equals(idQuery)) {
-                        manager.deleteTask(idQuery);
-                        writeResponse(exchange, "Task c id=" + idQuery + " удален", 200);
-                    }
-                }
-                writeResponse(exchange, "Task c id=" + idQuery + " нет в базе tasks", 404);
-            }
-            writeResponse(exchange, "В базе нет тасок", 404);
+            manager.deleteTask(idQuery);
+            writeResponse(exchange, "Task c id=" + idQuery + " удален", 200);
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка при запросе deleteTaskById()");
         }
@@ -254,7 +240,7 @@ public class HttpTaskServer {
                 writeResponse(exchange, resp, 200);
                 System.out.println("Epics  отправлены");
             } else {
-                writeResponse(exchange, "Нет эпиков", 404);
+                writeResponse(exchange, "Нет эпиков", 200);
                 System.out.println("Нет эпиков");
             }
         } catch (IOException exp) {
@@ -270,7 +256,7 @@ public class HttpTaskServer {
                 writeResponse(exchange, resp, 200);
                 System.out.println("Epic c id=" + idQuery + " отправлен");
             } else {
-                writeResponse(exchange, "Epic c id=" + idQuery + " не найден", 404);
+                writeResponse(exchange, "Epic c id=" + idQuery + " не найден", 400);
                 System.out.println("Epic c id=" + idQuery + " не найден");
             }
         } catch (IOException exp) {
@@ -287,7 +273,7 @@ public class HttpTaskServer {
                     manager.updateEpic(epic);
                     writeResponse(exchange, "Epic обновлен", 200);
                 } else {
-                    writeResponse(exchange, "Epic не обновлен, т.к. нет в базе", 400);
+                    writeResponse(exchange, "Epic не обновлен, т.к. не найден в базе", 400);
                 }
             } else {
                 manager.saveEpic(epic);
@@ -300,19 +286,9 @@ public class HttpTaskServer {
     private void deleteEpic(HttpExchange exchange) {
         try {
             int idQuery = requestQueryId(exchange);
-            List<Epic> allEpics = manager.getAllEpics();
-            if (allEpics != null && !allEpics.isEmpty()) {
-                for (Epic managerEpic : allEpics) {
-                    if (managerEpic.getId().equals(idQuery)) {
-                        manager.deleteEpic(idQuery);
-                        writeResponse(exchange, "Epic c id=" + idQuery + " успешно удален", 200);
-                        System.out.println("Epic c id=" + idQuery + " успешно удален");
-                    }
-                }
-                writeResponse(exchange, "Epic c id=" + idQuery + " нет в базе", 404);
-                System.out.println("Epic c id=" + idQuery + " нет в базе epics");
-            }
-            writeResponse(exchange, "EpicDao пуст", 404);
+            manager.deleteEpic(idQuery);
+            writeResponse(exchange, "Epic c id=" + idQuery + " успешно удален", 200);
+            System.out.println("Epic c id=" + idQuery + " успешно удален");
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка при запросе deleteEpicById()");
         }
@@ -331,13 +307,12 @@ public class HttpTaskServer {
     private void getSubtasks(HttpExchange exchange) {
         try {
             List<Subtask> allSubtasks = manager.getAllSubtasks();
-            if (allSubtasks != null && !allSubtasks.isEmpty()) {
-
+            if (!allSubtasks.isEmpty()) {
                 String resp = gson.toJson(manager.getAllSubtasks());
                 writeResponse(exchange, resp, 200);
                 System.out.println("Список subtasks отправлен");
             } else {
-                writeResponse(exchange, "Subtasks - пустой", 404);
+                writeResponse(exchange, "Subtasks - пустой", 200);
                 System.out.println("Список subtasks - пустой");
             }
         } catch (IOException exp) {
@@ -353,7 +328,7 @@ public class HttpTaskServer {
                 writeResponse(exchange, resp, 200);
                 System.out.println("Subtask с id=" + idQuery + " отправлен");
             } else {
-                writeResponse(exchange, "Subtask c id=" + idQuery + " не найден", 404);
+                writeResponse(exchange, "Subtask c id=" + idQuery + " не найден в базе", 400);
                 System.out.println("Subtask c id=" + idQuery + " не найден");
             }
         } catch (IOException exp) {
@@ -364,19 +339,9 @@ public class HttpTaskServer {
     private void deleteSubtask(HttpExchange exchange) {
         try {
             int idQuery = requestQueryId(exchange);
-            List<Subtask> allSubtasks = manager.getAllSubtasks();
-            if (allSubtasks != null && !allSubtasks.isEmpty()) {
-                for (Subtask subtask : allSubtasks) {
-                    if (subtask.getId().equals(idQuery)) {
-                        manager.deleteEpic(idQuery);
-                        writeResponse(exchange, "Subtask c id=" + idQuery + " удален", 200);
-                        System.out.println("Subtask c id=" + idQuery + " удален");
-                    }
-                }
-                writeResponse(exchange, "Subtask c id=" + idQuery + " нет в базе", 404);
-                System.out.println("Subtask c id=" + idQuery + " нет в базе");
-            }
-            writeResponse(exchange, "SubtaskDao пуст", 404);
+            manager.deleteEpic(idQuery);
+            writeResponse(exchange, "Subtask c id=" + idQuery + " удален", 200);
+            System.out.println("Subtask c id=" + idQuery + " удален");
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка при запросе deleteSubtask()");
         }
@@ -399,7 +364,7 @@ public class HttpTaskServer {
                 writeResponse(exchange, resp, 200);
                 System.out.println("Cписок приориета задач отправлен");
             } else {
-                writeResponse(exchange, "Cписок приоритета пустой", 404);
+                writeResponse(exchange, "Cписок приоритета пустой", 200);
                 System.out.println("Cписок приоритета пустой");
             }
         } catch (IOException exp) {
@@ -412,12 +377,13 @@ public class HttpTaskServer {
             int idQuery = requestQueryId(exchange);
             Epic epic = manager.getEpic(idQuery);
             if (epic != null) {
-                if (!manager.getSubtaskForEpic(epic).isEmpty()) {
-                    String resp = gson.toJson(manager.getSubtaskForEpic(epic));
+                List<Subtask> subtaskForEpic = manager.getSubtaskForEpic(epic);
+                if (!subtaskForEpic.isEmpty()) {
+                    String resp = gson.toJson(subtaskForEpic);
                     writeResponse(exchange, resp, 200);
                     System.out.println("Список сабтасок эпика с id=" + idQuery + " отправлен");
                 } else {
-                    writeResponse(exchange, "Список сабтасок эпика с id=" + idQuery + " пустой", 404);
+                    writeResponse(exchange, "Нет сабтасков у эпика id=" + idQuery + " пустой", 200);
                 }
             } else {
                 writeResponse(exchange, "Эпика id=" + idQuery + " не существует", 404);
@@ -435,8 +401,8 @@ public class HttpTaskServer {
                 writeResponse(exchange, resp, 200);
                 System.out.println("История отправлена");
             } else {
-                writeResponse(exchange, "История просмотров - отсутствует", 404);
-                System.out.println("История просмотров - отсутствует");
+                writeResponse(exchange, "История просмотров отсутствует", 200);
+                System.out.println("История просмотров отсутствует");
             }
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getHistory()");
@@ -463,7 +429,7 @@ public class HttpTaskServer {
                             writeResponse(exchange, "Сабтаска с id=" + subtask.getId() + ", обновлена", 200);
                         } else {
                             writeResponse(exchange, "Не удалось обновить." +
-                                    "В базе нет сабтаски id=" + subtask.getId(), 200);
+                                    "В базе нет сабтаски id=" + subtask.getId(), 400);
                         }
                     }
                 } else {
