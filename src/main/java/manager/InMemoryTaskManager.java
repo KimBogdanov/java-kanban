@@ -52,6 +52,9 @@ public class InMemoryTaskManager implements TaskManager {
                 }
                 subtask.setId(counter++);
                 addPriorityTasks(subtask);
+                if (epic.getSubtaskList() == null) {
+                    epic.setSubtaskList(new ArrayList<>());
+                }
                 epic.getSubtaskList().add(subtask.getId());
                 subtaskDao.put(subtask.getId(), subtask);
                 updateStatusEpic(epic.getId());
@@ -85,23 +88,32 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
-        Task task = taskDao.get(id);
-        historyManager.addTask(task);
-        return task;
+        if (taskDao.containsKey(id)) {
+            Task task = taskDao.get(id);
+            historyManager.addTask(task);
+            return task;
+        }
+        return null;
     }
 
     @Override
     public Subtask getSubtask(int id) {
-        Subtask subtask = subtaskDao.get(id);
-        historyManager.addTask(subtask);
-        return subtask;
+        if (subtaskDao.containsKey(id)) {
+            Subtask subtask = subtaskDao.get(id);
+            historyManager.addTask(subtask);
+            return subtask;
+        }
+        return null;
     }
 
     @Override
     public Epic getEpic(int id) {
-        Epic epic = epicDao.get(id);
-        historyManager.addTask(epic);
-        return epic;
+        if (epicDao.containsKey(id)) {
+            Epic epic = epicDao.get(id);
+            historyManager.addTask(epic);
+            return epic;
+        }
+        return null;
     }
 
     @Override

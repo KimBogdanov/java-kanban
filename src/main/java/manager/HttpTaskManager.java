@@ -1,7 +1,7 @@
 package manager;
 
-import Server.KVClient;
-import Server.LocalDateTimeAdapter;
+import server.KVClient;
+import server.LocalDateTimeAdapter;
 import com.google.gson.*;
 import models.Epic;
 import models.Subtask;
