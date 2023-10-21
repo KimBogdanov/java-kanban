@@ -161,15 +161,9 @@ public class HttpTaskServer {
 
     private void getTasks(HttpExchange exchange) {
         try {
-            List<Task> allTasks = manager.getAllTasks();
-            if (!allTasks.isEmpty()) {
-                String response = gson.toJson(allTasks);
-                writeResponse(exchange, response, 200);
-                System.out.println("Таски отправленны");
-            } else {
-                writeResponse(exchange, "Нет тасок", 200);
-                System.out.println("Нет тасок");
-            }
+            String response = gson.toJson(manager.getAllTasks());
+            //Разобрался, и про 204 код почитал. Для списков истории и приоритета использую его
+            writeResponse(exchange, response, 200);
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getTasks()");
         }
@@ -239,15 +233,8 @@ public class HttpTaskServer {
 
     private void getEpics(HttpExchange exchange) {
         try {
-            List<Epic> allEpics = manager.getAllEpics();
-            if (!allEpics.isEmpty()) {
-                String resp = gson.toJson(allEpics);
-                writeResponse(exchange, resp, 200);
-                System.out.println("Epics  отправлены");
-            } else {
-                writeResponse(exchange, "Нет эпиков", 200);
-                System.out.println("Нет эпиков");
-            }
+            String resp = gson.toJson(manager.getAllEpics());
+            writeResponse(exchange, resp, 200);
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getEpics()");
         }
@@ -314,15 +301,8 @@ public class HttpTaskServer {
 
     private void getSubtasks(HttpExchange exchange) {
         try {
-            List<Subtask> allSubtasks = manager.getAllSubtasks();
-            if (!allSubtasks.isEmpty()) {
-                String resp = gson.toJson(manager.getAllSubtasks());
-                writeResponse(exchange, resp, 200);
-                System.out.println("Список subtasks отправлен");
-            } else {
-                writeResponse(exchange, "Subtasks - пустой", 200);
-                System.out.println("Список subtasks - пустой");
-            }
+            String resp = gson.toJson(manager.getAllSubtasks());
+            writeResponse(exchange, resp, 200);
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getSubtasks()");
         }
@@ -370,13 +350,14 @@ public class HttpTaskServer {
 
     private void getPrioritizedTasks(HttpExchange exchange) {
         try {
-            if (!manager.getPrioritizedTasks().isEmpty()) {
-                String resp = gson.toJson(manager.getPrioritizedTasks());
+            List<Task> prioritizedTasks = manager.getPrioritizedTasks();
+            String resp = gson.toJson(prioritizedTasks);
+            if (!prioritizedTasks.isEmpty()) {
                 writeResponse(exchange, resp, 200);
                 System.out.println("Cписок приориета задач отправлен");
             } else {
-                writeResponse(exchange, "Cписок приоритета пустой", 200);
                 System.out.println("Cписок приоритета пустой");
+                writeResponse(exchange, resp, 204);
             }
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getPrioritizedTasks()");
@@ -389,15 +370,10 @@ public class HttpTaskServer {
             Epic epic = manager.getEpic(idQuery);
             if (epic != null) {
                 List<Subtask> subtaskForEpic = manager.getSubtaskForEpic(epic);
-                if (!subtaskForEpic.isEmpty()) {
-                    String resp = gson.toJson(subtaskForEpic);
-                    writeResponse(exchange, resp, 200);
-                    System.out.println("Список сабтасок эпика с id=" + idQuery + " отправлен");
-                } else {
-                    writeResponse(exchange, "Нет сабтасков у эпика id=" + idQuery + " пустой", 200);
-                }
+                String resp = gson.toJson(subtaskForEpic);
+                writeResponse(exchange, resp, 200);
             } else {
-                writeResponse(exchange, "Эпика id=" + idQuery + " не существует", 404);
+                writeResponse(exchange, "Эпика id=" + idQuery + " не существует", 400);
             }
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getEpicSubtasksById()");
@@ -407,13 +383,13 @@ public class HttpTaskServer {
     private void getHistory(HttpExchange exchange) {
         try {
             List<Task> history = manager.getHistory();
+            String resp = gson.toJson(history);
             if (!history.isEmpty()) {
-                String resp = gson.toJson(history);
                 writeResponse(exchange, resp, 200);
                 System.out.println("История отправлена");
             } else {
-                writeResponse(exchange, "История просмотров отсутствует", 200);
                 System.out.println("История просмотров отсутствует");
+                writeResponse(exchange, resp, 204);
             }
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getHistory()");
