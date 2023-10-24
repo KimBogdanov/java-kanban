@@ -6,7 +6,6 @@ import models.Subtask;
 import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,6 +22,9 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     File fileSave = new File(pathSave);
     File fileLoad = new File(pathLoad);
     File file = new File(path);
+    public FileBackedTasksManagerTest() {
+        manager = new FileBackedTasksManager();
+    }
 
     @BeforeEach
     public void beforeEach() {
