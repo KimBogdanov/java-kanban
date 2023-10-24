@@ -9,7 +9,6 @@ import manager.Managers;
 import models.Epic;
 import models.Subtask;
 import models.Task;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -162,7 +161,6 @@ public class HttpTaskServer {
     private void getTasks(HttpExchange exchange) {
         try {
             String response = gson.toJson(manager.getAllTasks());
-            //Разобрался, и про 204 код почитал. Для списков истории и приоритета использую его
             writeResponse(exchange, response, 200);
         } catch (IOException exp) {
             throw new HttpTaskServerException("Ошибка getTasks()");
@@ -459,7 +457,7 @@ public class HttpTaskServer {
     private JsonObject getJsonObject(HttpExchange exchange, String body) throws IOException {
         JsonElement jsonElement = JsonParser.parseString(body);
 
-        if (!jsonElement.isJsonObject()) { // проверяем, точно ли мы получили JSON-объект
+        if (!jsonElement.isJsonObject()) {
             writeResponse(exchange, "Переданное тело не JSON", 400);
         }
         return jsonElement.getAsJsonObject();
