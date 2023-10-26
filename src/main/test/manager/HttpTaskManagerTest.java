@@ -7,7 +7,6 @@ import models.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -20,6 +19,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     public void setUP() throws IOException {
         kvServer = new KVServer();
         kvServer.start();
+        manager = new HttpTaskManager();
     }
 
     @AfterEach
@@ -29,8 +29,6 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
     @Test
     public void testLoadFromHttpServer() {
-        HttpTaskManager manager = new HttpTaskManager();
-
         Task saveTask = manager.saveTask(new Task("Task", "Desc"
                 , LocalDateTime.of(2023, 1, 1, 1, 0), 60));
         Epic saveEpic = manager.saveEpic(new Epic("Epic", "Desc"));

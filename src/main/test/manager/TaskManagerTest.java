@@ -7,7 +7,6 @@ import models.Subtask;
 import models.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,15 +20,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 "Description",
                 LocalDateTime.of(2023, 10, 10, 10, 10),
                 60);
-    }
-
-    protected Subtask createSubtaskAndParentEpic() {
-        Epic epic = new Epic(555, "Name", "Description", Status.NEW,
-                LocalDateTime.of(2023, 10, 10, 10, 10),
-                60L);
-        return new Subtask(65, "Name", "Description", Status.NEW,
-                LocalDateTime.of(2023, 10, 10, 10, 10),
-                60L, 555);
     }
 
     protected Subtask createSubtask() {
